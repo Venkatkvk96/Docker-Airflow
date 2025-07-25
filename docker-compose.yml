@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    env_file: .env                  # ✅ Add this
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  airflow_web:
+    build: .
+    image: custom_airflow:2.9.1
+    container_name: airflow_web
+    depends_on:
+      - mysql
+    restart: always
+    env_file: .env                  # ✅ Add this
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW_CORE_LOAD_EXAMPLES: "False"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./training_files:/opt/airflow/training_files
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    command: >
+      bash -c "
+        airflow db migrate &&
+        airflow users create --username ${AIRFLOW_USER} --firstname ${AIRFLOW_FIRSTNAME} --lastname ${AIRFLOW_LASTNAME} --role Admin --email ${AIRFLOW_EMAIL} --password ${AIRFLOW_PASS} &&
+        airflow webserver
+      "
+
+  airflow_scheduler:
+    build: .
+    image: custom_airflow:2.9.1
+    container_name: airflow_scheduler
+    depends_on:
+      - mysql
+    restart: always
+    env_file: .env                  # ✅ Add this
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW_CORE_LOAD_EXAMPLES: "False"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./training_files:/opt/airflow/training_files
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    command: >
+      bash -c "
+        airflow scheduler
+      "
+
+volumes:
+  mysql_data:

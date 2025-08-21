@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 from dateutil import parser
 
-# ✅ Load environment variables
+# Load environment variables
 load_dotenv("/opt/airflow/.env")
 
 default_args = {
@@ -38,11 +38,11 @@ with DAG(
             
             file_path = os.path.join(folder_path, filenames[0])
             df = pd.read_csv(file_path)
-            print(f"✅ Extracted {len(df)} rows from {file_path}")
+            print(f"Extracted {len(df)} rows from {file_path}")
 
             df.to_pickle('/tmp/extracted_training.pkl')
         except Exception as e:
-            print(f"❌ Error in Extract step: {e}")
+            print(f"Error in Extract step: {e}")
             raise
 
     def transform():
@@ -53,7 +53,7 @@ with DAG(
             # Clean and standardize column names
             df.columns = df.columns.str.strip().str.replace(" ", "_").str.lower()
 
-            # ✅ Robust date parsing
+            # Robust date parsing
             def parse_date(val):
                 try:
                     return parser.parse(str(val)).date().strftime('%Y-%m-%d')
@@ -66,17 +66,17 @@ with DAG(
             before = len(df)
             df = df.dropna(subset=['training_date'])
             after = len(df)
-            print(f"🧪 Transformed data. Dropped {before - after} rows with invalid dates. Remaining: {after}")
+            print(f"Transformed data. Dropped {before - after} rows with invalid dates. Remaining: {after}")
 
             df.to_pickle('/tmp/transformed_training.pkl')
         except Exception as e:
-            print(f"❌ Error in Transform step: {e}")
+            print(f"Error in Transform step: {e}")
             raise
 
     def load():
         try:
             df = pd.read_pickle('/tmp/transformed_training.pkl')
-            print(f"⬆️ Loading {len(df)} rows into MySQL...")
+            print(f"Loading {len(df)} rows into MySQL...")
 
             host = os.getenv("MYSQL_HOST")
             port = int(os.getenv("MYSQL_PORT", 3306))
@@ -86,7 +86,7 @@ with DAG(
 
             for var in [host, user, password, database]:
                 if not var:
-                    raise ValueError("❌ One or more MySQL environment variables are missing.")
+                    raise ValueError("One or more MySQL environment variables are missing.")
 
             conn = pymysql.connect(
                 host=host,
@@ -112,10 +112,10 @@ with DAG(
             conn.commit()
             cursor.close()
             conn.close()
-            print("✅ Data successfully loaded into MySQL.")
+            print("Data successfully loaded into MySQL.")
 
         except Exception as e:
-            print(f"❌ Error in Load step: {e}")
+            print(f"Error in Load step: {e}")
             raise
 
     extract_task = PythonOperator(task_id='extract_csv', python_callable=extract)

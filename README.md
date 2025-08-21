@@ -1,6 +1,4 @@
-#**Daily Training Data Pipeline Automation for Induction and Regular Training - with Apache Airflow, Docker and MySQL.**
-
-
+#Daily Training Data Pipeline Automation for Induction and Regular Training - with Apache Airflow, Docker and MySQL.
 
 This project runs an **ETL pipeline** using **Apache Airflow** orchestrated with **Docker Compose**, with **MySQL** as the backend database.
 
@@ -8,31 +6,22 @@ The pipeline automatically extracts training data from CSV files, transforms it,
 
 
 
-
-##**Project Structure:**
-
+##Project Structure:
 
 
 Airflow-docker:
 
-> DAGS
-
-	> daily_training_etl_uploads.py.
-
-> .env
-
-> docker-compose.yml
-
-> Dockerfile
-
-> requirements.txt
-
-> training_files
-
-	> Training_Details.csv ----------> # Uploading folder
+- DAGS
+	- daily_training_etl_uploads.py.
+- .env
+- docker-compose.yml
+- Dockerfile
+- requirements.txt
+- training_files
+	- Training_Details.csv ----------> Uploading folder
 
 
-##**Tech Stack:**
+##Tech Stack:
 
 Python: ETL and Automation
 Apache Airflow: Workflow orchestration (DAGs for ETL pipeline)
@@ -40,6 +29,23 @@ MySQL: Database for storing training records
 Docker & Docker Compose: Containerization and orchestration
 Git & GitHub: Version control and collaboration
 Email Reports: smtplib / email
+
+
+##Services:
+
+|**Service**        |**Role**			|**Port**
+|MySQL				|Database backend	|3307:3306
+|airflow_web		|Airflow Web UI		|8080:8080
+|airflow_scheduler	|Schedules DAGs		|	-
+
+
+##**ETL flow:**
+
+1. **Extract**: Reads CSV files from training_files/share_folder
+2. **Transform**: Cleans and standardizes data
+3. **Load**: Inserts into MySQL table
+
+
 
 
 

@@ -33,10 +33,11 @@ Airflow-docker:
 
 ## Services:
 
-|**Service**        |**Role**			|**Port**
-|MySQL				|Database backend	|3307:3306
-|airflow_web		|Airflow Web UI		|8080:8080
-|airflow_scheduler	|Schedules DAGs		|	-
+|**Service**        |**Role**			|**Port**|
+|-------------------|-------------------|---------|
+|MySQL				|Database backend	|3307:3306|
+|airflow_web		|Airflow Web UI		|8080:8080|
+|airflow_scheduler	|Schedules DAGs		|	-	|
 
 
 ## ETL flow:

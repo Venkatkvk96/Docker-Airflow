@@ -40,6 +40,14 @@ Airflow-docker:
 |airflow_scheduler	|Schedules DAGs		|	-	|
 
 
+## Services Access:
+1. docker compose up-d
+2. docker ps
+3. Airflow Web UI - http://localhost:8080 (Credential.env)
+4. MySQL - (Credential .env)
+5. docker compose down
+
+
 ## ETL flow:
 
 1. **Extract**: Reads CSV files from training_files/share_folder
